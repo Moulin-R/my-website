@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIスクールNEO - 未来のAIスキルを習得しよう</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .btn-primary {
+            background-color: #ff6b6b;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 9999px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+        .btn-primary:hover {
+            background-color: #ff4c4c;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+            transform: translateY(-2px);
+        }
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: #ff6b6b;
+            border-radius: 2px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 1.5rem;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+        .feature-icon {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="leading-relaxed">
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container mx-auto px-4 relative z-10">
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-6 animate-pulse">
+                AIスクールNEOへようこそ！
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+                これからの時代に欠かせない「AIスキル」を習得できる、一人ひとりに寄り添った、わかりやすい実践型スクールです。
+            </p>
+            <a href="mailto:moulin4976@gmail.com" class="btn-primary inline-block">
+                無料体験に申し込む
+            </a>
+        </div>
+    </section>
+
+    <!-- AI Course Recommender Section (Gemini API) -->
+    <section id="ai-recommender" class="py-20 bg-white">
+        <div class="container mx-auto px-4 max-w-3xl text-center">
+            <h2 class="section-title">✨ AIコース診断</h2>
+            <p class="text-gray-700 mb-8 text-lg">
+                あなたがAIで実現したいことや興味のあることを入力してください。<br>
+                AIがあなたにぴったりのコースをおすすめします！
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
+                <input type="text" id="interest-input" placeholder="例: おしゃれなカフェのロゴを作りたい" class="w-full sm:w-2/3 p-4 border border-gray-300 rounded-full focus:ring-2 focus:ring-purple-400 focus:outline-none transition">
+                <button id="get-recommendation-btn" class="btn-primary bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-200 hover:shadow-purple-300 w-full sm:w-auto">
+                    診断する
+                </button>
+            </div>
+            <div id="loader" class="hidden">
+                <div class="loader"></div>
+                <p class="text-gray-600">AIが考えています...</p>
+            </div>
+            <div id="recommendation-result" class="mt-8 p-8 bg-purple-50 border-2 border-dashed border-purple-300 rounded-2xl text-left hidden">
+                <!-- Gemini API response will be inserted here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title">AIスクールNEOが選ばれる理由</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="card">
+                    <div class="feature-icon">💡</div>
+                    <h3 class="text-2xl font-semibold mb-4">実践的なカリキュラム</h3>
+                    <p class="text-gray-700">
+                        AIの基本からツールの使い方、実際のコンテンツ作成まで、手を動かしながら学べます。
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="feature-icon">🤝</div>
+                    <h3 class="text-2xl font-semibold mb-4">個別サポート</h3>
+                    <p class="text-gray-700">
+                        学習の進捗は人それぞれ。個別相談もOKなので、安心して学習を進められます。
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="feature-icon">🚀</div>
+                    <h3 class="text-2xl font-semibold mb-4">未来を切り拓くスキル</h3>
+                    <p class="text-gray-700">
+                        AIは私たちの可能性を広げる、未来の知的パートナー。新しいテクノロジーを習得し、時代をリードしましょう。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Course Menu Section -->
+    <section id="courses" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title">講習会メニュー紹介</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-2">ビジネス資料制作</h3>
+                    <p class="text-gray-600">PowerPointよりもデザイン性の高い資料を簡単に作成。</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-2">画像制作(イラスト・写真)</h3>
+                    <p class="text-gray-600">プロ級のイラストや写真をAIで生成する技術を習得。</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-2">SNS投稿デザイン</h3>
+                    <p class="text-gray-600">インスタ、X、LINE用のデザインを簡単に作成。</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-2">名刺・ロゴ作成</h3>
+                    <p class="text-gray-600">初心者でもプロっぽい名刺やロゴをデザイン。</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-2">GPTs (AIチャット)制作</h3>
+                    <p class="text-gray-600">自分だけのAIチャットボットを作成し、活用する。</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-2">音楽制作</h3>
+                    <p class="text-gray-600">AIを活用した音楽制作の基礎から応用まで。</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-2">電子書籍制作</h3>
+                    <p class="text-gray-600">AIの力を借りて電子書籍を効率的に作成。</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-2">アプリ開発</h3>
+                    <p class="text-gray-600">AIを活用した簡単なアプリ開発の基礎を学ぶ。</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-2">LINEスタンプ制作</h3>
+                    <p class="text-gray-600">オリジナルLINEスタンプをAIでデザイン。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Steps to Start Section -->
+    <section id="start-steps" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title">まずは、ここからスタート！</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div class="card">
+                    <div class="feature-icon">💻</div>
+                    <h3 class="text-2xl font-semibold mb-4">1. パソコン環境の準備</h3>
+                    <p class="text-gray-700">
+                        学習に必要な基本的な環境を整えましょう。OS、CPU、メモリ、ストレージ、ネット環境、セキュリティ対策までサポートします。
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="feature-icon">🧠</div>
+                    <h3 class="text-2xl font-semibold mb-4">2. AIの基本を学ぶ</h3>
+                    <p class="text-gray-700">
+                        AIの仕組みと可能性について理解を深めます。AIの歴史から種類まで、わかりやすく解説。
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="feature-icon">🛠️</div>
+                    <h3 class="text-2xl font-semibold mb-4">3. AIツールに触れる</h3>
+                    <p class="text-gray-700">
+                        ChatGPTやCanvaなど、実際のツールの使い方を体験します。初心者でも簡単に使えるプロンプトもご紹介。
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="feature-icon">✨</div>
+                    <h3 class="text-2xl font-semibold mb-4">4. 実際に生成してみる</h3>
+                    <p class="text-gray-700">
+                        自分の手でAIコンテンツを作成します。学んだ知識をすぐに実践に活かせます。
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="feature-icon">💡</div>
+                    <h3 class="text-2xl font-semibold mb-4">5. アイデアを考えカタチにする</h3>
+                    <p class="text-gray-700">
+                        オリジナルのプロジェクトを構想し、AIを活用して実現する力を養います。
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="feature-icon">📈</div>
+                    <h3 class="text-2xl font-semibold mb-4">時代は変化し続けています</h3>
+                    <p class="text-gray-700">
+                        AIは私たちの思考を助ける未来のパートナー。焦らず少しずつ、新しいテクノロジーを習得していきましょう。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Instructor Profile Section -->
+    <section id="instructor" class="py-20 bg-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="section-title">講師プロフィール</h2>
+            <div class="flex flex-col md:flex-row items-center justify-center bg-white rounded-3xl shadow-xl p-8 max-w-4xl mx-auto">
+                <div class="md:w-1/3 mb-8 md:mb-0">
+                    <img src="https://placehold.co/300x300/667eea/ffffff?text=Eiichiro+Saito" alt="Eiichiro Saito" class="rounded-full w-48 h-48 object-cover mx-auto mb-4 border-4 border-purple-500 shadow-lg">
+                    <p class="text-lg font-semibold text-purple-700">Eiichiro Saito</p>
+                    <p class="text-sm text-gray-500">生成AIパスポート 2025.02</p>
+                </div>
+                <div class="md:w-2/3 md:text-left md:pl-8">
+                    <h3 class="text-3xl font-bold mb-4 text-gray-800">「美」×「テクノロジー」の探求者</h3>
+                    <p class="text-lg mb-4 text-gray-700">
+                        Creative Director / Hair Stylist / Digital Creator / AIコンテンツプロデューサー
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li>多彩なデジタルコンテンツを制作</li>
+                        <li>美・健康・ライフスタイルをデザイン</li>
+                        <li>「クラフトマンシップは時代を超える」</li>
+                    </ul>
+                    <p class="mt-6 text-xl font-semibold text-purple-700">
+                        ぜひ、ご一緒に！
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section id="contact" class="py-20 bg-gradient-to-r from-red-400 to-pink-500 text-white text-center">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl md:text-5xl font-extrabold mb-6">
+                未来のAIスキルを今すぐ手に入れよう！
+            </h2>
+            <p class="text-xl md:text-2xl mb-10 max-w-3xl mx-auto">
+                AIはあなたの頭脳を進化させる最強の仲間！
+                この機会に、AIスキルを習得して、あなたの可能性を広げませんか？
+            </p>
+            <a href="mailto:moulin4976@gmail.com" class="btn-primary inline-block bg-white text-pink-600 hover:bg-gray-100 hover:text-pink-700">
+                今すぐ無料体験を予約する
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container mx-auto px-4">
+            <p>&copy; 2025 GAI SCHOOL NEO. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Gemini API Integration for AI Course Recommender ---
+
+        const getRecommendationBtn = document.getElementById('get-recommendation-btn');
+        const interestInput = document.getElementById('interest-input');
+        const loader = document.getElementById('loader');
+        const recommendationResultDiv = document.getElementById('recommendation-result');
+
+        getRecommendationBtn.addEventListener('click', async () => {
+            const userInput = interestInput.value.trim();
+            if (!userInput) {
+                // Simple validation: prompt user if input is empty
+                interestInput.placeholder = "何か興味のあることを入力してください！";
+                interestInput.focus();
+                return;
+            }
+
+            // Show loader and hide previous results
+            loader.classList.remove('hidden');
+            recommendationResultDiv.classList.add('hidden');
+            getRecommendationBtn.disabled = true;
+            getRecommendationBtn.textContent = '診断中...';
+
+            // The prompt for the Gemini API
+            const courseList = [
+                "ビジネス資料制作", "画像制作(イラスト・写真)", "SNS投稿デザイン",
+                "名刺・ロゴ作成", "GPTs (AIチャット)制作", "音楽制作",
+                "電子書籍制作", "アプリ開発", "LINEスタンプ制作"
+            ].join(", ");
+
+            const prompt = `あなたはAIスクールのコース推薦アドバイザーです。以下の講習会メニューの中から、ユーザーの興味に最も合うものを1つだけ選び、その理由を200字程度の初心者に分かりやすい言葉で説明してください。
+
+# 講習会メニューリスト
+${courseList}
+
+# ユーザーの興味
+「${userInput}」
+
+# 回答フォーマット
+### おすすめのコース：**【コース名】**
+**おすすめの理由：**
+【ここに理由を記述】`;
+
+            try {
+                // Prepare the payload for the Gemini API
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // API key is handled by the environment
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                // Make the API call
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                let recommendationText = "申し訳ありません、うまく回答を生成できませんでした。もう一度お試しください。";
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    // Get the text and format it for display
+                    recommendationText = result.candidates[0].content.parts[0].text;
+                    recommendationText = recommendationText
+                        .replace(/### (.*?)\n/g, '<h3 class="text-2xl font-bold text-purple-800 mb-4">$1</h3>')
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\n/g, '<br>');
+                }
+                
+                // Display the result
+                recommendationResultDiv.innerHTML = recommendationText;
+                recommendationResultDiv.classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                recommendationResultDiv.innerHTML = `<p class="text-red-500">エラーが発生しました。時間をおいて再度お試しください。</p>`;
+                recommendationResultDiv.classList.remove('hidden');
+            } finally {
+                // Hide loader and re-enable button
+                loader.classList.add('hidden');
+                getRecommendationBtn.disabled = false;
+                getRecommendationBtn.textContent = '診断する';
+            }
+        });
+    </script>
+
+</body>
+</html>
